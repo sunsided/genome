@@ -1,4 +1,11 @@
-# Human Genome Playground
+# 🧬 Human Genome Playground
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/sunsided/genome/refs/heads/main/.readme/viz.png" alt="Cypher crate hero picture" />
+</div>
+
+> Output of the `genome-viz` TUI, run with `task viz`. Mitochondrial chromosome in the hg38/GRCh38 FASTA file.
+
 
 ## `genome-inspect` output
 
