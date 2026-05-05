@@ -90,11 +90,7 @@ pub(crate) fn percent(part: u64, total: u64) -> f64 {
 
 /// Convert a boolean into a human-readable "yes / no" string.
 pub(crate) fn yes_no(value: bool) -> &'static str {
-    if value {
-        "yes"
-    } else {
-        "no / not detected"
-    }
+    if value { "yes" } else { "no / not detected" }
 }
 
 /// Identify canonical chromosome names from a list of contig names.
@@ -107,7 +103,9 @@ pub(crate) fn canonical_chromosomes(names: &[String]) -> HashSet<String> {
     for name in names {
         let normalized = name.strip_prefix("chr").unwrap_or(name);
 
-        let is_autosome = normalized.parse::<u8>().is_ok_and(|n| (1..=22).contains(&n));
+        let is_autosome = normalized
+            .parse::<u8>()
+            .is_ok_and(|n| (1..=22).contains(&n));
 
         let is_sex_or_mito = matches!(normalized, "X" | "Y" | "M" | "MT");
 

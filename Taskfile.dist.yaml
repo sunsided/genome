@@ -31,3 +31,7 @@ tasks:
   inspect:manual:window:
     cmds:
       - cargo run -p genome-inspect-manual --release -- windows hg38/hg38.fa --size 100000 > hg38.windows.tsv
+
+  viz:
+    cmds:
+      - cargo run -p genome-viz --release -- hg38/hg38.fa
