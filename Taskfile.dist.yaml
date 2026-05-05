@@ -1,0 +1,5 @@
+version: "3"
+tasks:
+  inspect:
+    cmds:
+      - cargo run -p genome-inspect --release -- hg38/hg38.fa.gz --chrom-alias hg38/hg38.chromAlias.txt

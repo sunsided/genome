@@ -1,6 +1,6 @@
 use anyhow::{Context, Result};
 use clap::Parser;
-use needletail::{parse_fastx_file, Sequence};
+use needletail::{Sequence, parse_fastx_file};
 use std::collections::HashSet;
 use std::path::PathBuf;
 
@@ -95,16 +95,15 @@ fn main() -> Result<()> {
         stats.has_alt_or_patch_like_contigs |=
             lower_id.contains("_alt") || lower_id.contains("_fix") || lower_id.contains("_patch");
 
-        stats.has_random_or_unplaced |=
-            lower_id.contains("random") || lower_id.contains("unplaced") || lower_id.contains("unlocalized");
+        stats.has_random_or_unplaced |= lower_id.contains("random")
+            || lower_id.contains("unplaced")
+            || lower_id.contains("unlocalized");
 
         if args.verbose {
             let gc = percent(local_g + local_c, len);
             let n_pct = percent(local_n, len);
 
-            println!(
-                "{id}\tlen={len}\tgc={gc:.2}%\tn={n_pct:.2}%"
-            );
+            println!("{id}\tlen={len}\tgc={gc:.2}%\tn={n_pct:.2}%");
         }
 
         stats.contig_names.push(id);
@@ -135,12 +134,36 @@ fn print_summary(stats: &GenomeStats) {
     println!();
     println!("base composition");
     println!("----------------");
-    println!("A:     {} ({:.2}%)", stats.a, percent(stats.a, stats.total_bases));
-    println!("C:     {} ({:.2}%)", stats.c, percent(stats.c, stats.total_bases));
-    println!("G:     {} ({:.2}%)", stats.g, percent(stats.g, stats.total_bases));
-    println!("T:     {} ({:.2}%)", stats.t, percent(stats.t, stats.total_bases));
-    println!("N:     {} ({:.2}%)", stats.n, percent(stats.n, stats.total_bases));
-    println!("other: {} ({:.6}%)", stats.other, percent(stats.other, stats.total_bases));
+    println!(
+        "A:     {} ({:.2}%)",
+        stats.a,
+        percent(stats.a, stats.total_bases)
+    );
+    println!(
+        "C:     {} ({:.2}%)",
+        stats.c,
+        percent(stats.c, stats.total_bases)
+    );
+    println!(
+        "G:     {} ({:.2}%)",
+        stats.g,
+        percent(stats.g, stats.total_bases)
+    );
+    println!(
+        "T:     {} ({:.2}%)",
+        stats.t,
+        percent(stats.t, stats.total_bases)
+    );
+    println!(
+        "N:     {} ({:.2}%)",
+        stats.n,
+        percent(stats.n, stats.total_bases)
+    );
+    println!(
+        "other: {} ({:.6}%)",
+        stats.other,
+        percent(stats.other, stats.total_bases)
+    );
 
     println!();
     println!("inferred metadata");
@@ -148,10 +171,26 @@ fn print_summary(stats: &GenomeStats) {
     println!("assembly:             unknown, likely hg38/GRCh38 if downloaded from UCSC hg38");
     println!("provider:             unknown from FASTA alone, likely UCSC if file is hg38.fa.gz");
     println!("contig style:         {}", contig_style(stats));
-    println!("mitochondrial contig: {}", if stats.has_mito { "yes" } else { "no" });
-    println!("contains alt/patch-like contigs: {}", yes_no(stats.has_alt_or_patch_like_contigs));
-    println!("contains random/unplaced contigs: {}", yes_no(stats.has_random_or_unplaced));
-    println!("soft masked:          {}", if stats.lowercase > 0 { "yes" } else { "no / not detected" });
+    println!(
+        "mitochondrial contig: {}",
+        if stats.has_mito { "yes" } else { "no" }
+    );
+    println!(
+        "contains alt/patch-like contigs: {}",
+        yes_no(stats.has_alt_or_patch_like_contigs)
+    );
+    println!(
+        "contains random/unplaced contigs: {}",
+        yes_no(stats.has_random_or_unplaced)
+    );
+    println!(
+        "soft masked:          {}",
+        if stats.lowercase > 0 {
+            "yes"
+        } else {
+            "no / not detected"
+        }
+    );
     println!("lowercase bases:      {}", stats.lowercase);
 
     println!();
@@ -214,9 +253,5 @@ fn percent(part: u64, total: u64) -> f64 {
 }
 
 fn yes_no(value: bool) -> &'static str {
-    if value {
-        "yes"
-    } else {
-        "no / not detected"
-    }
+    if value { "yes" } else { "no / not detected" }
 }

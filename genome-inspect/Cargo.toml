@@ -1,9 +1,10 @@
 [package]
 name = "genome-inspect"
 version = "0.1.0"
-edition = "2024"
+edition.workspace = true
+package = false
 
 [dependencies]
-anyhow = "1.0.102"
-clap = { version = "4.6.1", features = ["derive"] }
-needletail = "0.7.3"
+anyhow.workspace = true
+clap.workspace = true
+needletail.workspace = true

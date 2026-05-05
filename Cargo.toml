@@ -1,0 +1,16 @@
+[workspace]
+resolver = "3"
+members = [
+    "genome-inspect",
+]
+
+[workspace.package]
+edition = "2024"
+authors = ["Markus Mayer <widemeadows@gmail.com>"]
+license = "EUPL-1.2"
+repository = "https://github.com/sunsided/genome"
+
+[workspace.dependencies]
+anyhow = "1.0.102"
+clap = { version = "4.6.1", features = ["derive"] }
+needletail = "0.7.3"
