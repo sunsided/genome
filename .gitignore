@@ -1,3 +1,4 @@
 hg38/*.fa.gz
 hg38/*.fa
 *.aria2
+target/
