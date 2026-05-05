@@ -1,5 +1,33 @@
 version: "3"
 tasks:
+  default:
+    cmds:
+      - task --list-all
+
+  fmt:
+    cmds:
+      - cargo fmt --all
+
+  lint:fix:
+    cmds:
+      - cargo clippy --fix --all-targets --allow-staged
+
   inspect:
     cmds:
       - cargo run -p genome-inspect --release -- hg38/hg38.fa.gz --chrom-alias hg38/hg38.chromAlias.txt
+
+  inspect:manual:
+    cmds:
+      - cargo run -p genome-inspect-manual --release -- inspect hg38/hg38.fa --chrom-alias hg38/hg38.chromAlias.txt
+
+  inspect:manual:index:
+    cmds:
+      - cargo run -p genome-inspect-manual --release -- index hg38/hg38.fa
+
+  inspect:manual:region:
+    cmds:
+      - cargo run -p genome-inspect-manual --release -- fetch hg38/hg38.fa chrM:1-200
+
+  inspect:manual:window:
+    cmds:
+      - cargo run -p genome-inspect-manual --release -- windows hg38/hg38.fa --size 100000 > hg38.windows.tsv

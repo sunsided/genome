@@ -1,5 +1,5 @@
 [package]
-name = "genome-inspect"
+name = "genome-inspect-manual"
 version = "0.1.0"
 edition.workspace = true
 authors.workspace = true
@@ -10,4 +10,3 @@ publish = false
 [dependencies]
 anyhow.workspace = true
 clap.workspace = true
-needletail.workspace = true

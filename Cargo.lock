@@ -187,6 +187,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "genome-inspect-manual"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "clap",
+]
+
+[[package]]
 name = "getrandom"
 version = "0.3.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
