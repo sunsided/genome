@@ -23,3 +23,6 @@ aria2c -x 1 -s 1 -c --allow-overwrite=true \
 
 md5sum -c md5sum.txt --ignore-missing
 
+echo "Unzipping reference genome"
+gunzip -k hg38.fa.gz
+
