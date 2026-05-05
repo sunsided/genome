@@ -10,14 +10,16 @@ cd "$OUT"
 
 # Big file: segmented + resumable.
 aria2c -x 8 -s 8 -c \
-  "$BASE/latest/hg38.fa.gz"
+  "$BASE/hg38.fa.gz"
 
-# Small files: no segmentation, no resume weirdness.
-aria2c -x 1 -s 1 --allow-overwrite=true \
-  "$BASE/hg38.chrom.sizes" \
-  "$BASE/hg38.chromAlias.txt" \
+aria2c -x 1 -s 1 -c --allow-overwrite=true \
+  "$BASE/hg38.chrom.sizes"
+
+aria2c -x 1 -s 1 -c --allow-overwrite=true \
+  "$BASE/hg38.chromAlias.txt"
+
+aria2c -x 1 -s 1 -c --allow-overwrite=true \
   "$BASE/md5sum.txt"
 
-# Verify downloaded files that are present in md5sum.txt.
 md5sum -c md5sum.txt --ignore-missing
 

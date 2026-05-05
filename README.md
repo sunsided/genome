@@ -1,4 +1,4 @@
-# Genome
+# Genome Playground
 
 ## Reference genome data
 
