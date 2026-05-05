@@ -84,8 +84,7 @@ fn draw_body(f: &mut Frame, app: &crate::app::AppState, bases: &[u8], area: Rect
 }
 
 fn draw_footer(f: &mut Frame, area: Rect) {
-    let text =
-        " ↑↓/kj:scroll pgup/pgdn:page [n]ext/[p]rev chr [m]itochondria [g]start [G]end [q]uit ";
+    let text = " ↑↓/kj:scroll pgup/pgdn:page [n]ext/[p]rev chr [1]chr1 [s]kip-N [m]ito [g]start [G]end [q]uit ";
     let paragraph = Paragraph::new(text)
         .style(Style::default().fg(Color::Gray))
         .alignment(Alignment::Center);

@@ -35,7 +35,7 @@ impl AppState {
 
         let reader = FastaReader::open(fasta_path)?;
 
-        Ok(Self {
+        let mut app = Self {
             records,
             current_index: 0,
             current_pos: 1,
@@ -45,7 +45,9 @@ impl AppState {
             running: true,
             error_message: None,
             reader,
-        })
+        };
+        app.skip_n_contigs();
+        Ok(app)
     }
 
     /// Resize-aware recalculation of page and view dimensions.
@@ -71,9 +73,13 @@ impl AppState {
             KeyCode::Char('n') => self.next_chromosome(),
             KeyCode::Char('p') => self.prev_chromosome(),
             KeyCode::Char('m') => self.jump_to_mitochondria(),
+            KeyCode::Char('s') => self.skip_n_contigs(),
             KeyCode::Char('g') => self.jump_to_start(),
             KeyCode::Char('G') => self.jump_to_end(),
             KeyCode::Char('q') | KeyCode::Char('Q') => self.running = false,
+            KeyCode::Char(c) if c.is_ascii_digit() => {
+                self.jump_to_chromosome(c as u8 - b'0');
+            }
             KeyCode::Char('c') if key.modifiers.contains(KeyModifiers::CONTROL) => {
                 self.running = false;
             }
@@ -95,7 +101,7 @@ impl AppState {
     /// Move to the next chromosome, wrapping around.
     pub fn next_chromosome(&mut self) {
         self.current_index = (self.current_index + 1) % self.records.len();
-        self.current_pos = 1;
+        self.seek_first_non_n();
     }
 
     /// Move to the previous chromosome, wrapping around.
@@ -105,7 +111,7 @@ impl AppState {
         } else {
             self.current_index -= 1;
         }
-        self.current_pos = 1;
+        self.seek_first_non_n();
     }
 
     /// Jump to the mitochondria contig if present.
@@ -116,8 +122,61 @@ impl AppState {
             .position(|r| matches!(r.name.as_str(), "chrM" | "MT" | "M"))
         {
             self.current_index = idx;
-            self.current_pos = 1;
+            self.seek_first_non_n();
         }
+    }
+
+    /// Jump to chromosome `n` (1-9) if present.
+    ///
+    /// Matches common naming conventions: "chr{n}" or "{n}".
+    pub fn jump_to_chromosome(&mut self, n: u8) {
+        let n = n as u32;
+        if let Some(idx) = self
+            .records
+            .iter()
+            .position(|r| r.name == format!("chr{n}") || r.name == n.to_string())
+        {
+            self.current_index = idx;
+            self.seek_first_non_n();
+        }
+    }
+
+    /// Skip past all entries whose names start with 'N' (unplaced contigs)
+    /// and land on the first real chromosome.
+    pub fn skip_n_contigs(&mut self) {
+        if let Some(idx) = self.records.iter().position(|r| !r.name.starts_with('N')) {
+            self.current_index = idx;
+            self.seek_first_non_n();
+        }
+    }
+
+    /// Seek to the first base in the current contig that is not 'N'.
+    fn seek_first_non_n(&mut self) {
+        let record = &self.records[self.current_index];
+        let mut pos = 1;
+        const CHUNK: u64 = 4096;
+
+        while pos <= record.length {
+            let count = CHUNK.min(record.length - pos + 1);
+            match self.reader.fetch_bases(record, pos, count) {
+                Ok(bases) => {
+                    if let Some(offset) = bases.iter().position(|&b| b.to_ascii_uppercase() != b'N')
+                    {
+                        self.current_pos = pos + offset as u64;
+                        return;
+                    }
+                    pos += bases.len() as u64;
+                }
+                Err(e) => {
+                    self.error_message = Some(format!("{e}"));
+                    self.current_pos = 1;
+                    return;
+                }
+            }
+        }
+
+        // All Ns — stay at the start.
+        self.current_pos = 1;
     }
 
     /// Jump to the start of the current chromosome.
